@@ -3,11 +3,11 @@ Files:
 ⁃	action_tagging.py
 ⁃	researchMapping.py
 
-Save Jupyter notebooks sanpshots:
+Save Jupyter notebook sanpshots:
 - Run save_history.py
-- You should modify the paths at the begining of the file in order to determine which notebook should be tracked and destination location for the notebook snapshots. 
+- You should modify the paths at the begining of the file in order to determine which notebook should be tracked and the destination location for the notebook snapshots. 
 
-Code reconstructing:
+Code reconstruction:
 ⁃	Place  action_tagging.py  into the folder with the Jupyter notebook files. 
 ⁃	The structure of these files is assumed to be P*/P*_task*/experiment/*****.ipynb
 ⁃	on the command line, navigate to the folder containing action_tagging.py and the participant folders.
