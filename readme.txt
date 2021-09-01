@@ -16,11 +16,11 @@ Data_collection_dsworkflow_api.py
 DSWorkFLowAPI.docx: DSWorkFlow API function descriptions for experiment participants
 Qualitative sub-components: External components used for saving additional information which could be synchronized with the other components with respect to specific timestamps. An example could be Screen, Video and Audio recordings, (recommended software to this end: OBS). The use of screen recordings which include the system clock may also aid the synchronization of this data with other datasets. Another example would be the use of eye tracking equipment.
 
-	Workflow Reconstruction:
+Workflow Reconstruction:
 Workflow Reconstruction: a Python Class for reconstructing the workflow in chronological order and extracting general information. This Class contains a variable named df, which is a Pandas dataframe containing the reconstructed workflow.
 FIles: workflow_reconstruction.py
 	
-	Feature Extraction:
+Feature Extraction:
 Feature_extraction: a Python class which extracts relevant features from the reconstructed object (reconstructed workflow) for the purposes of analyzing the code workflow.
 FIles:
 Feature_extraction.py: the class itself
