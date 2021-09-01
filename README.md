@@ -46,7 +46,7 @@ FIles:
 * configuration.json: this file includes configuration settings that are used by the feature files (e.g. window sizes, chosen features)
 
 ## Additional information can be found in the following paper:
-* * Moshe Mash, Stephanie Rosenthal, and Reid Simmons. 2021. DSWorkFlow: A Framework for Capturing Data Scientists’ Workflows. Extended Abstracts of the 2021 CHI Conference on Human Factors in Computing Systems. Association for Computing Machinery, New York, NY, USA, Article 305, 1–7. DOI:https://doi.org/10.1145/3411763.3451683
+** Moshe Mash, Stephanie Rosenthal, and Reid Simmons. 2021. DSWorkFlow: A Framework for Capturing Data Scientists’ Workflows. Extended Abstracts of the 2021 CHI Conference on Human Factors in Computing Systems. Association for Computing Machinery, New York, NY, USA, Article 305, 1–7. DOI:https://doi.org/10.1145/3411763.3451683 **
  
 
 
