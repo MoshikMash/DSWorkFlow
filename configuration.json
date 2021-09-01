@@ -1,0 +1,62 @@
+{
+  "possible_actions": [
+    "FE_binning",
+    "visualize",
+    "FE_encoding",
+    "feature_sel",
+    "feature_scaling",
+    "splitting",
+    "train",
+    "eval",
+    "OTHER"
+  ],
+  "action_groups": {
+    "visualize": [
+      "visualize",
+      "describe_dataframe"
+    ],
+    "feature_scaling": [
+      "feature_scaling",
+      "feature_scaling_MinMaxScaler",
+      "feature_scaling_StandardScaler",
+      "feature_scaling_Normalizer"
+    ],
+    "train": [
+      "train",
+      "hyperparameter_tuning",
+      "train / hyperparameter_tuning"
+    ],
+    "eval": [
+      "eval_cm",
+      "eval_precision",
+      "eval_recall",
+      "eval_accuracy",
+      "eval_auc",
+      "eval_f1",
+      "eval_get_predictions",
+      "eval_get_predictions_proba"
+    ],
+    "OTHER": [
+      "OTHER",
+      "print",
+      "import",
+      "empty"
+    ]
+  },
+  "time_window_sizes": {
+    "action_features": 300,
+    "performance_features": 300,
+    "inactivity_features": 300,
+    "irrational_behavior_features": 300,
+    "train_eval_loop_features": 300,
+    "length_period_to_be_considered_inactivity_moment": 30
+  },
+  "feature_vector": {
+    "action_features": true,
+    "inactivity_features": true,
+    "performance_features": true,
+    "train_eval_loop_features": true,
+    "integrated_features": true,
+    "irrational_behavior_features": true
+  }
+}
