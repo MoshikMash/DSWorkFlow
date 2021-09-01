@@ -1,4 +1,5 @@
-## DSWorkflow is a framework for conducting experiments which investigate data scientists’ thinking processes and which carry out both quantitative as well as qualitative analyses of their workflow.
+# DSWorkFLow
+DSWorkflow is a framework for conducting experiments which investigate data scientists’ thinking processes and which carry out both quantitative as well as qualitative analyses of their workflow.
 
 ## DSWorkFLow Components:
 1. Data Collection
