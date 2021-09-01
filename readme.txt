@@ -1,25 +1,39 @@
-Files: 
-⁃	save_history.py
-⁃	action_tagging.py
-⁃	researchMapping.py
+DSWorkflow is a framework for conducting experiments which investigate data scientists’ thinking processes and which carry out both quantitative as well as qualitative analyses of their workflow.
 
-Save Jupyter notebook sanpshots:
-- Run save_history.py
-- You should modify the paths at the begining of the file in order to determine which notebook should be tracked and the destination location for the notebook snapshots. 
+DSWorkFLow Components:
+Data Collection
+Workflow Reconstruction
+Feature Extraction
 
-Code reconstruction:
-⁃	Place  action_tagging.py  into the folder with the Jupyter notebook files. 
-⁃	The structure of these files is assumed to be P*/P*_task*/experiment/*****.ipynb
-⁃	on the command line, navigate to the folder containing action_tagging.py and the participant folders.
-⁃	Run this file for each person and task with:
-python action_tagging.py "P1/P1_task2/experiment" "P1T2.p"
-⁃	The new parsed pickle will be stored in “P1T2.p" 
-⁃	The participant is 1, and task number is 2 (in this example)
+See the following for descriptions of the sub-components which make up each component:
 
-Action assigment and feature extraction:
-⁃	Move parsed pickles to folder containing researchMapping.py 
-⁃	For each Participant and Task: Change first and second input for mapExecutions to the place where the parsed pickle is, and the output file name/location you want to save the pickle to
-⁃	Run mapExecutions 
+Data Collection:
+Save Jupyter Notebook snapshots: a Python script which saves a snapshot of the Jupyter Notebook that the participant is working on at 1-second intervals. 
+FIles: data_collection_save_notebook_snapshots.py
+data_collection_dsworkflow_api (optional): a Python file with all the pre-developed functions which could assist the participants in completing their assigned task (developing a Machine Learning model).
+FIles:
+Data_collection_dsworkflow_api.py
+DSWorkFLowAPI.docx: DSWorkFlow API function descriptions for experiment participants
+Qualitative sub-components: External components used for saving additional information which could be synchronized with the other components with respect to specific timestamps. An example could be Screen, Video and Audio recordings, (recommended software to this end: OBS). The use of screen recordings which include the system clock may also aid the synchronization of this data with other datasets. Another example would be the use of eye tracking equipment.
 
-⁃	csv files will be saved to directly csv/
-⁃	Pickle files will be saved to directory pickles/ 
+	Workflow Reconstruction:
+Workflow Reconstruction: a Python Class for reconstructing the workflow in chronological order and extracting general information. This Class contains a variable named df, which is a Pandas dataframe containing the reconstructed workflow.
+FIles: workflow_reconstruction.py
+	
+	Feature Extraction:
+Feature_extraction: a Python class which extracts relevant features from the reconstructed object (reconstructed workflow) for the purposes of analyzing the code workflow.
+FIles:
+Feature_extraction.py: the class itself
+Features Directory: contains Python Transformers for extracting the desired features
+Old features Directory: Contains many features that were extracted and not used as they were not relevant to the specific model in question (such as predicting moments of stuckness)
+configuration.json: this file includes configuration settings that are used by the feature files (e.g. window sizes, chosen features)
+
+		
+
+Additional information can be found in the following paper:
+Moshe Mash, Stephanie Rosenthal, and Reid Simmons. 2021. DSWorkFlow: A Framework for Capturing Data Scientists’ Workflows. Extended Abstracts of the 2021 CHI Conference on Human Factors in Computing Systems. Association for Computing Machinery, New York, NY, USA, Article 305, 1–7. DOI:https://doi.org/10.1145/3411763.3451683
+ 
+
+
+
+
