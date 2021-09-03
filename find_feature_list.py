@@ -29,31 +29,31 @@ class FindFeatureList(ast.NodeVisitor):
                 self.variable_history[node.targets[0].id].append(element.value)
 
         # df = FE_encode_values_of_categorical_features(df, ['x', 'y'])
-        elif isinstance(node.value.args[1], ast.List) and (
-                'FE_encode_values' in self.code or 'FE_create_one_hot' in self.code):
-            for element in node.value.args[1].elts:
-                self.features.append(element.value)
+        elif 'FE_encode_values' in self.code or 'FE_create_one_hot' in self.code:
+            if isinstance(node.value.args[1], ast.List):
+                for element in node.value.args[1].elts:
+                    self.features.append(element.value)
 
-        # df = FE_encode_values_of_categorical_features(df, columns_to_encode)
-        elif isinstance(node.value.args[1], ast.Name) and (
-                'FE_encode_values' in self.code or 'FE_create_one_hot' in self.code):
-            self.features = self.variable_history[node.value.args[1].id]
+            # df = FE_encode_values_of_categorical_features(df, columns_to_encode)
+            elif isinstance(node.value.args[1], ast.Name):
+                self.features = self.variable_history[node.value.args[1].id]
 
         # X_train_new, X_test_new = feature_scaling(X_train, X_test, ['x', 'y'], 'MinMaxScaler')
-        elif isinstance(node.value.args[2], ast.List) and 'feature_scaling' in self.code:
-            for element in node.value.args[2].elts:
-                self.features.append(element.value)
-
-        # X_train_new, X_test_new = feature_scaling(X_train, X_test, columns_to_scale, 'MinMaxScaler')
-        elif isinstance(node.value.args[2], ast.Name):
-            self.features = self.variable_history[node.value.args[2].id]
+        elif 'feature_scaling' in self.code:
+            if isinstance(node.value.args[2], ast.List):
+                for element in node.value.args[2].elts:
+                    self.features.append(element.value)
+            # X_train_new, X_test_new = feature_scaling(X_train, X_test, columns_to_scale, 'MinMaxScaler')
+            elif isinstance(node.value.args[2], ast.Name):
+                self.features = self.variable_history[node.value.args[2].id]
 
         # X_train = X_train[columns]
         elif hasattr(node.value, 'slice'):
             if isinstance(node.value.slice, ast.Name):
-                self.features = self.variable_history[node.value.value.id]
+                self.features = self.variable_history[node.value.slice.id]
 
-            # X_train = X_train[['age', 'gender']]
-            elif isinstance(node.value.slice, ast.List):
-                for element in node.value.slice.elts:
-                    self.features.append(element.value)
+        # X_train = X_train[['age', 'gender']]
+        elif isinstance(node.value.slice, ast.List):
+            for element in node.value.slice.elts:
+                self.features.append(element.value)
+
