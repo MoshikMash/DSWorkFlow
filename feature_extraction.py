@@ -1,8 +1,9 @@
 import pandas as pd
 import re
 from copy import deepcopy
-import workflow_reconstruction
 import json
+
+from find_feature_list import FindFeatureList
 
 from features.train_eval_loop_features.required_information import train_eval_loop_transformer
 from features.train_eval_loop_features import counter_train_eval_loops_transformer, \
@@ -82,56 +83,6 @@ def get_more_metric_d(data):
     return data_types_d, scores_d
 
 
-def find_finished_line(list_s, data, index):
-    code = list_s
-    list_ls = [list_s[0]]
-    i = index + 1
-    while not ("]]" in code) and not ("]" in code):
-        code = data.iloc[i, 0].lower()
-        list_ls.append(code)
-        i = i + 1
-    list_sub = ""
-    for ls in list_ls:
-        list_sub = list_sub + ls.strip("\[").strip("\]")
-    return list_sub, i - 1
-
-
-def two_line_features(features, data, index, var_name, new_action_d, feature_d):
-    # print("INDEX", index)
-    next_line = data.loc[index + 1]['code'].lower()
-    # print("NEXT LINE:", next_line)
-    next_action = data.loc[index + 1]['action']
-    if (next_action == "FE_binning") or (next_action == "FE_encoding") or ("feature_scaling" in next_action):
-        # this is not a feature selection list
-        return new_action_d, feature_d
-    if (var_name in next_line) and (".drop(" in next_line):
-        # We  have a subtractive two line selection
-        features = sub_features(features)
-        new_action_d[index + 1] = "feature_sel"
-        feature_d[index + 1] = features
-        return new_action_d, feature_d
-    elif (var_name in next_line) and not (".drop(" in next_line):
-        # We  have an additive two line selection
-        features = add_features(features)
-        new_action_d[index + 1] = "feature_sel"
-        feature_d[index + 1] = features
-        return new_action_d, feature_d
-    else:
-        return new_action_d, feature_d
-
-
-def add_features(features):
-    for i in range(len(features)):
-        val = features[i].strip().strip("'").strip("\"")
-        features[i] = val
-    return features
-
-
-def sub_features(features):
-    for i in range(len(features)):
-        val = features[i].strip().strip("'").strip("\"")
-        features[i] = "-" + val
-    return features
 
 
 def get_score_d(data):
@@ -190,74 +141,6 @@ class FeatureExtraction:
         self.df = self.df[self.df['exec_count'] > 1]
 
     # static methods
-    @staticmethod
-    def find_features(data):
-        feature_d = dict()
-        new_action_d = dict()
-        not_prev_line = data[
-            (data.action == "FE_encoding") | (data.action == "FE_binning") | (data.action == "feature_scaling")].index
-        possible_indices = data[(data.action == "OTHER") | (data.action == "feature_sel")].index
-        not_lines = not_prev_line - 1
-        possible_indices = possible_indices.difference(not_lines)
-        sub = data.loc[possible_indices]
-        for index, row in sub.iterrows():
-            code = row['code'].lower()
-            code = code.strip()
-            if code == "":
-                continue
-            if ("=" in code) and not (".drop" in code):
-                try:
-                    var_name = code.split("=")[0].strip()
-                    list_sub = code.split("=")[1]
-                except:
-                    var_name = code.split("=")[0].strip()
-                    list_sub = ""
-                if "[" in var_name:
-                    # print("BROKEN", var_name, code)
-                    continue
-            elif (".drop" in code):
-                # print("USED IT")
-                list_sub = code[code.find("["):code.find("]") + 1]
-            else:
-                continue
-            list = re.findall("\[[\"'].*", list_sub)
-            if ("[[" in list_sub) and (len(list) == 1):
-                # Found in place, additive selection
-                if "]]" not in list_sub:
-                    # look at next lines
-                    list, i = find_finished_line(list, data, index)
-                    list = [list]
-                features = re.findall("[\"'][^\"']*[\"']", list[0])
-                features = add_features(features)
-                new_action_d[index] = "feature_sel"
-                feature_d[index] = features
-                new_action_d[index] = "feature_sel"
-            elif (".drop(" in code) and (len(list) == 1):
-                # found in place subtractive selection
-                features = re.findall("[\"'][^\"']*[\"']", list[0])
-                # print(features)
-                features = sub_features(features)
-                new_action_d[index] = "feature_sel"
-                feature_d[index] = features
-            elif len(list) == 1:
-                # We may have have a two line selection
-                if "]" not in list_sub:
-                    # look at next lines
-                    list, index = find_finished_line(list, data, index)
-                    list = [list]
-                features = re.findall("[\"'][^\"']*[\"']", list[0])
-                if index <= data.shape[0]:
-                    new_action_d, feature_d = two_line_features(features, data, index, var_name, new_action_d,
-                                                                feature_d)
-        features_col = []
-        for index, row in data.iterrows():
-            # Find score or type in dictionary, or return default -1
-            features_col.append(feature_d.get(index, -1))
-        for key in new_action_d:
-            # Find score or type in dictionary, or return default -1
-            data.loc[key, "action"] = new_action_d[key]
-        return features_col
-
     @staticmethod
     def get_more_metric(data):
         data_types_d, scores_d = get_more_metric_d(data)
@@ -556,7 +439,20 @@ class FeatureExtraction:
         self.df['metric_type'] = data_types
         self.df['score'] = self.get_score(self.df)
         self.df['cm_content'] = self.get_cm_content(self.df)
-        self.df['features'] = self.find_features(self.df)
+
+        find_features_obj = FindFeatureList()
+        code_list = self.df['code'].values
+        features = []
+        for index, row in self.df.iterrows():
+            if row['has_error'] == 1:
+                features.append('')
+            else:
+                try:
+                    features.append(find_features_obj.find_features(row['code']))
+                except:
+                    features.append('')
+
+        self.df['features'] = features
 
     def extract_advanced_features(self):
         feature_transformers_required_information = [
