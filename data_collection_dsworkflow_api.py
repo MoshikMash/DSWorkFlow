@@ -41,7 +41,7 @@ if not sys.warnoptions:
 
 # read the csv file and return a dataframe
 def data_read_df():
-    db_name = 'Australia rain'
+    db_name = 'Adult'
     PATH = 'dataset/'
     df = pd.read_csv(os.path.join(PATH, f'{db_name}.csv'))
     return df
@@ -92,6 +92,7 @@ def visual_generate_category_target_prob_plot(df, feature_name):
 def visual_generate_dis_plot(df, feature_name):
     g = sns.FacetGrid(df, col='target', aspect=1)
     g = g.map(sns.histplot, feature_name)
+    g.set_xticklabels(rotation=80)
 
 
 ## Training Functions
